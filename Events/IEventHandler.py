@@ -15,5 +15,9 @@ class IEventHandler(ABC):
         pass
 
     @abstractmethod
+    def remove_habit(self):
+        pass
+
+    @abstractmethod
     def quit(self):
         pass

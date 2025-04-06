@@ -13,6 +13,8 @@ class KeystrokeHandlerUrwid(IKeystrokeHandler):
                 self.event_handler.move_down()
             elif key == 'enter':
                 self.event_handler.invert_status()
+            elif key.lower() == 'r':
+                self.event_handler.remove_habit()
             elif key.lower() == 'q':
                 self.event_handler.quit()
 

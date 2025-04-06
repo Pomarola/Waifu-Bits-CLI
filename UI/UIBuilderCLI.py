@@ -26,10 +26,15 @@ class UIBuilderCLI(IUIBuilder):
 
     def refresh(self, habits, statuses, selected_index):
         self.list_walker.clear()
-        for idx, habit in enumerate(habits):
-            widget = self._create_habit_widget(habit, statuses.get(habit, False), idx == selected_index)
-            self.list_walker.append(widget)
-        self.list_box.set_focus(selected_index)
+
+        if not habits:
+            placeholder = urwid.Text("No habits available. Press 'q' to exit.", align='center')
+            self.list_walker.append(urwid.AttrMap(placeholder, None))
+        else:
+            for idx, habit in enumerate(habits):
+                widget = self._create_habit_widget(habit, statuses.get(habit, False), idx == selected_index)
+                self.list_walker.append(widget)
+            self.list_box.set_focus(selected_index)
 
     @staticmethod
     def _create_habit_widget(habit, status, is_selected):
