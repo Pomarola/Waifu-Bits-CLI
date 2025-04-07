@@ -32,18 +32,25 @@ class UIBuilderCLI(IUIBuilder):
             self.list_walker.append(urwid.AttrMap(placeholder, None))
         else:
             for idx, habit in enumerate(habits):
-                widget = self._create_habit_widget(habit, statuses.get(habit, False), idx == selected_index)
+                widget = self._create_habit_widget(
+                    habit,
+                    statuses.get(habit, False),
+                    idx == selected_index
+                )
                 self.list_walker.append(widget)
             self.list_box.set_focus(selected_index)
 
     @staticmethod
     def _create_habit_widget(habit, status, is_selected):
-        status_str = '✅' if status else '❌'
-        habit_text = f"{status_str} {habit}"
+        selector = '>>' if is_selected else '  '
+        status_symbol = '[ + ]' if status else '[ - ]'
+        habit_text = f"{selector} {habit:<25} {status_symbol}"
 
         txt_widget = urwid.Text(habit_text, align='left')
 
+        # Highlight full width when selected
         if is_selected:
             return urwid.AttrMap(urwid.Padding(txt_widget, left=1, right=1), 'reversed')
         else:
             return urwid.AttrMap(urwid.Padding(txt_widget, left=1, right=1), None)
+
