@@ -19,7 +19,7 @@ class HabitAppUI:
     def __init__(self, habit_list_box, new_input_box):
         self.habit_list_box = habit_list_box
         self.new_input_box = new_input_box
-        self.focus_mode = 'list'  # or 'input'
+        self.focus_mode = 'list'
 
         self.pile = FixedFocusPile([
             ('weight', 2, self.habit_list_box.widget_view()),
@@ -31,10 +31,16 @@ class HabitAppUI:
     def widget_view(self):
         return self.view
 
-    def focus_input(self):
-        self.focus_mode = 'input'
-        self.pile.set_focus(1)
+    def is_list_focused(self):
+        return self.focus_mode == 'list'
 
-    def focus_list(self):
-        self.focus_mode = 'list'
-        self.pile.set_focus(0)
+    def focus(self, mode: str):
+        self.focus_mode = mode
+        if mode == 'list':
+            self.pile.set_focus(0)
+            self.habit_list_box.focus()
+            self.new_input_box.unfocus()
+        elif mode == 'input':
+            self.pile.set_focus(1)
+            self.habit_list_box.unfocus()
+            self.new_input_box.focus()

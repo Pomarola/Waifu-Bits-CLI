@@ -13,4 +13,5 @@ def get_config():
 def get_palette():
     return [
         ('reversed', 'standout', ''),
+        ('input_focus', 'black', 'light gray', 'bold'),
     ]
