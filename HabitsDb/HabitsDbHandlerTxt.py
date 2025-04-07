@@ -18,13 +18,16 @@ class HabitsDbHandlerTxt(IHabitsDbHandler):
             file.write('\n'.join(self._habits) + ('\n' if self._habits else ''))
 
     def add_habit(self, habit: str) -> None:
-        if habit not in self._habits:
-            self._habits.append(habit)
-            self._save_habits()
+        normalized_habit = habit.strip().lower()
+        if normalized_habit in self._habits:
+            return  # Already exists
+        self._habits.append(normalized_habit)
+        self._save_habits()
 
     def remove_habit(self, habit: str) -> None:
-        if habit in self._habits:
-            self._habits.remove(habit)
+        normalized_habit = habit.strip().lower()
+        if normalized_habit in self._habits:
+            self._habits.remove(normalized_habit)
             self._save_habits()
 
     def get_habits(self) -> List[str]:

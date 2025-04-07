@@ -19,5 +19,17 @@ class IEventHandler(ABC):
         pass
 
     @abstractmethod
+    def enter_input_mode(self):
+        pass
+
+    @abstractmethod
+    def cancel_input_mode(self):
+        pass
+
+    @abstractmethod
+    def add_new_habit(self):
+        pass
+
+    @abstractmethod
     def quit(self):
         pass

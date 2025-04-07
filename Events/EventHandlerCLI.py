@@ -3,46 +3,58 @@ import urwid
 from Events.IEventHandler import IEventHandler
 
 class EventHandlerCLI(IEventHandler):
-    def __init__(self, habits_db, status_db, ui_builder):
+    def __init__(self, habits_db, status_db, list_box, input_box, ui, loop):
         self.habits_db = habits_db
         self.status_db = status_db
-        self.ui_builder = ui_builder
-        self.habits = self.habits_db.get_habits()
+        self.list_box = list_box
+        self.input_box = input_box
+        self.ui = ui
+        self.loop = loop
+
+        self.habits = habits_db.get_habits()
         self.selected_index = 0
+        self.refresh()
+
+    def refresh(self):
+        self.habits = self.habits_db.get_habits()
+        self.list_box.set_data(self.habits, self.status_db.statuses)
 
     def move_up(self):
-        if not self.habits:
-            return
-        self.selected_index = (self.selected_index - 1) % len(self.habits)
-        self.ui_builder.refresh(self.habits, self.status_db.statuses, self.selected_index)
+        if self.ui.focus_mode == 'list':
+            self.list_box.move_up()
 
     def move_down(self):
-        if not self.habits:
-            return
-        self.selected_index = (self.selected_index + 1) % len(self.habits)
-        self.ui_builder.refresh(self.habits, self.status_db.statuses, self.selected_index)
+        if self.ui.focus_mode == 'list':
+            self.list_box.move_down()
 
     def invert_status(self):
-        if not self.habits:
-            return
-        habit = self.habits[self.selected_index]
-        current_status = self.status_db.statuses.get(habit, False)
-        self.status_db.update_status(habit, not current_status)
-        self.ui_builder.refresh(self.habits, self.status_db.statuses, self.selected_index)
+        if self.ui.focus_mode == 'list':
+            habit = self.list_box.get_selected()
+            if habit:
+                current = self.status_db.statuses.get(habit, False)
+                self.status_db.update_status(habit, not current)
+                self.refresh()
 
     def remove_habit(self):
-        if not self.habits:
-            return
+        if self.ui.focus_mode == 'list':
+            habit = self.list_box.get_selected()
+            if habit:
+                self.habits_db.remove_habit(habit)
+                self.refresh()
 
-        habit_to_remove = self.habits[self.selected_index]
+    def enter_input_mode(self):
+        self.ui.focus_input()
+        self.input_box.reset()
 
-        self.habits_db.remove_habit(habit_to_remove)
-        self.habits = self.habits_db.get_habits()
+    def cancel_input_mode(self):
+        self.ui.focus_list()
 
-        if self.selected_index >= len(self.habits):
-            self.selected_index = max(0, len(self.habits) - 1)
-
-        self.ui_builder.refresh(self.habits, self.status_db.statuses, self.selected_index)
+    def add_new_habit(self):
+        name = self.input_box.get_text()
+        if name:
+            self.habits_db.add_habit(name)
+        self.refresh()
+        self.ui.focus_list()
 
     def quit(self):
         raise urwid.ExitMainLoop()

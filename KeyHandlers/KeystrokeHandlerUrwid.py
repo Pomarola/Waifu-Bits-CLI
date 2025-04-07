@@ -7,15 +7,23 @@ class KeystrokeHandlerUrwid(IKeystrokeHandler):
 
     def start_listening(self):
         def handle_input(key):
-            if key == 'up':
-                self.event_handler.move_up()
-            elif key == 'down':
-                self.event_handler.move_down()
-            elif key == 'enter':
-                self.event_handler.invert_status()
-            elif key.lower() == 'r':
-                self.event_handler.remove_habit()
-            elif key.lower() == 'q':
-                self.event_handler.quit()
+            if self.event_handler.ui.focus_mode == 'input':
+                if key == 'enter':
+                    self.event_handler.add_new_habit()
+                elif key == 'esc':
+                    self.event_handler.cancel_input_mode()
+            else:
+                if key == 'up':
+                    self.event_handler.move_up()
+                elif key == 'down':
+                    self.event_handler.move_down()
+                elif key == 'enter':
+                    self.event_handler.invert_status()
+                elif key.lower() == 'r':
+                    self.event_handler.remove_habit()
+                elif key.lower() == 'n':
+                    self.event_handler.enter_input_mode()
+                elif key.lower() == 'q':
+                    self.event_handler.quit()
 
         self.loop.unhandled_input = handle_input

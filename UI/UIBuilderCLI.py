@@ -7,8 +7,10 @@ class UIBuilderCLI(IUIBuilder):
         self.habit_widgets = []
         self.list_box = None
         self.view = None
+        self.footer = None
 
-    def build_ui(self, habits, statuses, selected_index=0):
+    def build_ui(self, habits, statuses, selected_index=0, footer=None):
+        self.footer = footer
         self.habit_widgets = [
             self._create_habit_widget(habit, statuses.get(habit, False), idx == selected_index)
             for idx, habit in enumerate(habits)
@@ -19,26 +21,27 @@ class UIBuilderCLI(IUIBuilder):
 
         self.view = urwid.Frame(
             self.list_box,
-            header=urwid.Text("📅 Habit Tracker (↑↓ to navigate, Enter to toggle, q to quit)")
+            header=urwid.Text("📅 Habit Tracker (↑↓ Enter r n q)"),
+            footer=self.footer
         )
 
         return self.view
 
-    def refresh(self, habits, statuses, selected_index):
+    def refresh(self, habits, statuses, selected_index, footer=None):
+        self.footer = footer
         self.list_walker.clear()
 
         if not habits:
-            placeholder = urwid.Text("No habits available. Press 'q' to exit.", align='center')
+            placeholder = urwid.Text("No habits available. Press 'n' to add one, or 'q' to quit.", align='center')
             self.list_walker.append(urwid.AttrMap(placeholder, None))
         else:
             for idx, habit in enumerate(habits):
-                widget = self._create_habit_widget(
-                    habit,
-                    statuses.get(habit, False),
-                    idx == selected_index
-                )
+                widget = self._create_habit_widget(habit, statuses.get(habit, False), idx == selected_index)
                 self.list_walker.append(widget)
+
             self.list_box.set_focus(selected_index)
+
+        self.view.footer = self.footer
 
     @staticmethod
     def _create_habit_widget(habit, status, is_selected):
@@ -47,10 +50,4 @@ class UIBuilderCLI(IUIBuilder):
         habit_text = f"{selector} {habit:<25} {status_symbol}"
 
         txt_widget = urwid.Text(habit_text, align='left')
-
-        # Highlight full width when selected
-        if is_selected:
-            return urwid.AttrMap(urwid.Padding(txt_widget, left=1, right=1), 'reversed')
-        else:
-            return urwid.AttrMap(urwid.Padding(txt_widget, left=1, right=1), None)
-
+        return urwid.AttrMap(urwid.Padding(txt_widget, left=1, right=1), 'reversed' if is_selected else None)
