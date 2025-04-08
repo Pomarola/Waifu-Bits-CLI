@@ -7,20 +7,26 @@ class HabitListBox:
         self.selected_index = selected_index
         self.focused = True  # Track focus state
         self.list_walker = urwid.SimpleFocusListWalker([])
-        self.widget = urwid.ListBox(self.list_walker)
+        listbox = urwid.ListBox(self.list_walker)
+        padded = urwid.Padding(listbox, left=1, right=1)
+        self.widget = urwid.LineBox(padded, title="HABIT LIST")
         self.refresh()
 
     def refresh(self):
         self.list_walker.clear()
         if not self.habits:
-            self.list_walker.append(urwid.Text("No habits. Press 'n' to add one."))
+            self.list_walker.append(urwid.Text("Bro you have no habits, what are you doing? Do me a favor and press 'N' "))
         else:
             for idx, habit in enumerate(self.habits):
                 selected = (idx == self.selected_index) and self.focused
                 status_str = '[ + ]' if self.statuses.get(habit, False) else '[ - ]'
                 selector = '>>' if selected else '  '
-                label = f"{selector} {habit.upper():<25} {status_str}"
-                text = urwid.Text(label)
+
+                text = urwid.Columns([
+                    ('weight', 1, urwid.Text(f"{selector} {habit.upper():<40}")),
+                    (len(status_str), urwid.Text(status_str, align='right'))
+                ])
+
                 self.list_walker.append(
                     urwid.AttrMap(text, 'reversed' if selected else None)
                 )

@@ -5,14 +5,16 @@ from HabitsLog.IHabitsLogHandler import IHabitsLogHandler
 
 
 class HabitsLogHandlerCsv(IHabitsLogHandler):
-    def __init__(self, filepath: str, date: str):
+    def __init__(self, filepath: str, date: str, log_callback=None):
         self.filepath = filepath
         self.date = date
+        self._log_callback = log_callback
         self.statuses = self._load_statuses()
 
     def _load_statuses(self) -> Dict[str, bool]:
         statuses = {}
         if not os.path.exists(self.filepath):
+            self._log_callback(f"Couldn't find the file {self.filepath}. Created a new one so you can start with your journey.")
             return statuses
 
         with open(self.filepath, 'r', newline='') as csvfile:
@@ -20,11 +22,12 @@ class HabitsLogHandlerCsv(IHabitsLogHandler):
             for row in reader:
                 if row['date'] == self.date:
                     statuses[row['habit']] = row['done'].lower() == 'true'
-            return statuses
+        return statuses
 
     def update_status(self, habit: str, status: bool) -> None:
         self.statuses[habit] = status
         self._save_statuses()
+        self._log_callback(f"Updated status for {habit.upper()} to {'FACILITO' if status else 'RIP'}.")
 
     def _save_statuses(self) -> None:
         records = []
