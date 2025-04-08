@@ -12,8 +12,8 @@ class CommandBox:
         ]
 
         command_list = urwid.ListBox(urwid.SimpleFocusListWalker([
-            urwid.Text(""),
-            *[urwid.Text(f"• {cmd}") for cmd in commands]
+            urwid.AttrMap(urwid.Text(""), 'dim'),
+            *[urwid.AttrMap(urwid.Text(f"• {cmd}"), 'command') for cmd in commands]
         ]))
 
         padded = urwid.Padding(command_list, left=1, right=1)

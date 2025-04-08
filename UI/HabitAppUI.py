@@ -31,17 +31,17 @@ class HabitAppUI:
         # Compose layout
         self.pile = FixedFocusPile([
             ('weight', 5, urwid.Columns([
-                ('weight', 1, self.habit_box.widget_view()),
+                ('weight', 1, urwid.AttrMap(self.habit_box.widget_view(), 'bg')),
                 ('weight', 3, urwid.Pile([
-                    ('weight', 1, self.header.widget_view()),
-                    ('weight', 1, self.status_box.widget_view())
+                    ('weight', 1, urwid.AttrMap(self.header.widget_view(), 'header')),
+                    ('weight', 1, urwid.AttrMap(self.status_box.widget_view(), 'dim'))
                 ]))
             ])),
             ('weight', 1, urwid.Columns([
-                ('weight', 1, self.command_box.widget_view()),
+                ('weight', 1, urwid.AttrMap(self.command_box.widget_view(), 'bg')),
                 ('weight', 3, urwid.Pile([
-                    ('weight', 1, self.input_box.widget_view()),
-                    ('weight', 3, self.log_box.widget_view())
+                    ('weight', 1, urwid.AttrMap(self.input_box.widget_view(), 'input')),
+                    ('weight', 3, urwid.AttrMap(self.log_box.widget_view(), 'log'))
                 ]))
             ]))
         ], self)

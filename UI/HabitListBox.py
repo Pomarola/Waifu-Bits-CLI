@@ -9,27 +9,36 @@ class HabitListBox:
         self.list_walker = urwid.SimpleFocusListWalker([])
         listbox = urwid.ListBox(self.list_walker)
         padded = urwid.Padding(listbox, left=1, right=1)
-        self.widget = urwid.LineBox(padded, title="HABIT LIST")
+        self.linebox = urwid.LineBox(padded, title="HABIT LIST")
+        self.container = urwid.AttrMap(self.linebox, None)
+        self.widget = self.container
         self.refresh()
 
     def refresh(self):
         self.list_walker.clear()
         if not self.habits:
-            self.list_walker.append(urwid.Text("Bro you have no habits, what are you doing? Do me a favor and press 'N' "))
+            empty_text = urwid.AttrMap(
+                urwid.Text("Bro you have no habits, what are you doing? Do me a favor and press 'N' "),
+                'dim'
+            )
+            self.list_walker.append(empty_text)
         else:
             for idx, habit in enumerate(self.habits):
                 selected = (idx == self.selected_index) and self.focused
                 status_str = '[ + ]' if self.statuses.get(habit, False) else '[ - ]'
                 selector = '>>' if selected else '  '
+                selector_inv = '<<' if selected else '  '
 
                 text = urwid.Columns([
-                    ('weight', 1, urwid.Text(f"{selector} {habit.upper():<40}")),
-                    (len(status_str), urwid.Text(status_str, align='right'))
+                    ('weight', 1, urwid.Text(f"{selector} {habit.upper():<35}")),
+                    (len(status_str) + 3, urwid.Text(f"{status_str} {selector_inv}", align='right'))
                 ])
 
-                self.list_walker.append(
-                    urwid.AttrMap(text, 'reversed' if selected else None)
-                )
+                if selected:
+                    highlight = 'selected'
+                else:
+                    highlight = 'unselected' if self.focused else 'bg'
+                self.list_walker.append(urwid.AttrMap(text, highlight))
 
     def widget_view(self):
         return self.widget
@@ -56,8 +65,10 @@ class HabitListBox:
 
     def focus(self):
         self.focused = True
+        self.container.set_attr_map({None: 'log'})
         self.refresh()
 
     def unfocus(self):
         self.focused = False
+        self.container.set_attr_map({None: None})
         self.refresh()
