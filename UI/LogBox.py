@@ -16,7 +16,7 @@ class LogBox:
         self.list_walker.append(urwid.AttrMap(urwid.Text(""), 'log'))  # wide space to blend in
 
         for i, msg in enumerate(reversed(self.messages)):
-            style = 'log_focus' if i == 0 else 'bg'
+            style = 'log_focus' if i == 0 else 'log_unfocus'
             prefix = "> " if i == 0 else "  "
             self.list_walker.append(urwid.AttrMap(urwid.Text(prefix + msg), style))
 

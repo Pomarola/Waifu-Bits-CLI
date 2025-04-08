@@ -18,8 +18,9 @@ class HabitListBox:
         self.list_walker.clear()
         if not self.habits:
             empty_text = urwid.AttrMap(
-                urwid.Text("Bro you have no habits, what are you doing? Do me a favor and press 'N' "),
-                'dim'
+                urwid.Text("Bro you have no habits, what are you doing?\n"
+                           "Do me a favor and press 'N' ", align="center"),
+                'log_focus'
             )
             self.list_walker.append(empty_text)
         else:

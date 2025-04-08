@@ -12,32 +12,18 @@ def get_config():
 
 def get_palette():
     return [
-        # Default fallback style
         ('reversed', 'standout', ''),
 
-        # Input and focused box (border/title + field)
-        ('input_focus', 'white', 'dark gray'),
-
-        # Selected item in habit list
-        ('black', 'black', 'light gray'),
-
-        # Default background
-        ('bg', 'light gray', 'black'),
-
-        # LineBox titles
-        ('title', 'white', 'black'),
-
-        # Logs
-        ('log_focus', 'light gray', 'dark gray'),
-
-        # Command box
+        ('input_focus', 'bold,italics,white', 'dark gray'),
+        ('black', 'bold,black', 'light gray'),
+        ('bg', 'bold,light gray', 'black'),
+        ('title', 'bold,white', 'black'),
+        ('log_focus', 'italics,light gray', 'dark gray'),
+        ('log_unfocus', 'light gray', 'black'),
         ('command', 'light gray', 'black'),
-
-        # Header or dimmed/placeholder text
-        ('header', 'white', 'black'),
-        ('dim', 'dark gray', 'black'),
-
-        ('selected', 'black', 'light gray'),
-        ('unselected', 'light gray', ''),
-        ('unfocused', 'light gray', '')
+        ('header', 'bold,white', 'black'),
+        ('dim', 'bold,dark gray', 'black'),
+        ('selected', 'bold,black', 'light gray'),
+        ('unselected', 'bold,light gray', ''),
+        ('unfocused', 'bold,light gray', 'dark gray')
     ]
