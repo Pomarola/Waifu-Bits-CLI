@@ -17,7 +17,4 @@ class CommandBox:
         ]))
 
         padded = urwid.Padding(command_list, left=1, right=1)
-        self.widget = urwid.LineBox(padded, title="COMMANDS")
-
-    def widget_view(self):
-        return self.widget
+        self.view = urwid.LineBox(padded, title="COMMANDS")

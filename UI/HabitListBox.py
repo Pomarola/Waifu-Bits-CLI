@@ -1,75 +1,67 @@
 import urwid
 
 class HabitListBox:
-    def __init__(self, habits, statuses, selected_index=0):
-        self.habits = habits
-        self.statuses = statuses
-        self.selected_index = selected_index
-        self.focused = True  # Track focus state
-        self.list_walker = urwid.SimpleFocusListWalker([])
-        listbox = urwid.ListBox(self.list_walker)
-        padded = urwid.Padding(listbox, left=1, right=1)
-        self.linebox = urwid.LineBox(padded, title="HABIT LIST")
-        self.container = urwid.AttrMap(self.linebox, None)
-        self.widget = self.container
-        self.refresh()
+    def __init__(self):
+        self._habits = []
+        self._statuses = {}
+        self._selected_index = 0
+        self._focused = True  # Track focus state
+        self._list_walker = urwid.SimpleFocusListWalker([])
+        linebox = urwid.LineBox(urwid.Padding(urwid.ListBox(self._list_walker), left=1, right=1), title="HABIT LIST")
+        self.view = urwid.AttrMap(linebox, None)
+
+    def _render_row(self, habit, idx):
+        selected = (idx == self._selected_index) and self._focused
+        status_str = '[ + ]' if self._statuses.get(habit, False) else '[ - ]'
+        selector = '>>' if selected else '  '
+        selector_inv = '<<' if selected else '  '
+        text = urwid.Columns([
+            ('weight', 1, urwid.Text(f"{selector} {habit.upper():<35}")),
+            (len(status_str) + 3, urwid.Text(f"{status_str} {selector_inv}", align='right'))
+        ])
+        highlight = 'selected' if selected else 'unselected' if self._focused else 'bg'
+        return urwid.AttrMap(text, highlight)
+
+    @staticmethod
+    def _render_empty_message():
+        return urwid.AttrMap(
+            urwid.Text("Bro you have no habits, what are you doing?\n"
+                       "Do me a favor and press 'N' ", align="center"),
+            'log_focus'
+        )
 
     def refresh(self):
-        self.list_walker.clear()
-        if not self.habits:
-            empty_text = urwid.AttrMap(
-                urwid.Text("Bro you have no habits, what are you doing?\n"
-                           "Do me a favor and press 'N' ", align="center"),
-                'log_focus'
-            )
-            self.list_walker.append(empty_text)
+        self._list_walker.clear()
+        self._ensure_valid_selection()
+        if not self._habits:
+            self._list_walker.append(self._render_empty_message())
         else:
-            for idx, habit in enumerate(self.habits):
-                selected = (idx == self.selected_index) and self.focused
-                status_str = '[ + ]' if self.statuses.get(habit, False) else '[ - ]'
-                selector = '>>' if selected else '  '
-                selector_inv = '<<' if selected else '  '
-
-                text = urwid.Columns([
-                    ('weight', 1, urwid.Text(f"{selector} {habit.upper():<35}")),
-                    (len(status_str) + 3, urwid.Text(f"{status_str} {selector_inv}", align='right'))
-                ])
-
-                if selected:
-                    highlight = 'selected'
-                else:
-                    highlight = 'unselected' if self.focused else 'bg'
-                self.list_walker.append(urwid.AttrMap(text, highlight))
-
-    def widget_view(self):
-        return self.widget
+            for idx, habit in enumerate(self._habits):
+                self._list_walker.append(self._render_row(habit, idx))
 
     def move_up(self):
-        if self.habits:
-            self.selected_index = (self.selected_index - 1) % len(self.habits)
+        if self._habits:
+            self._selected_index = (self._selected_index - 1) % len(self._habits)
             self.refresh()
 
     def move_down(self):
-        if self.habits:
-            self.selected_index = (self.selected_index + 1) % len(self.habits)
+        if self._habits:
+            self._selected_index = (self._selected_index + 1) % len(self._habits)
             self.refresh()
 
     def get_selected(self):
-        if self.habits:
-            return self.habits[self.selected_index]
-        return None
+        return self._habits[self._selected_index] if self._habits else None
 
     def set_data(self, habits, statuses):
-        self.habits = habits
-        self.statuses = statuses
+        self._habits = habits
+        self._statuses = statuses
         self.refresh()
 
-    def focus(self):
-        self.focused = True
-        self.container.set_attr_map({None: 'log'})
+    def set_focus(self, focused: bool):
+        self._focused = focused
+        self.view.set_attr_map({None: 'log'} if focused else {None: None})
         self.refresh()
 
-    def unfocus(self):
-        self.focused = False
-        self.container.set_attr_map({None: None})
-        self.refresh()
+    def _ensure_valid_selection(self):
+        if self._selected_index >= len(self._habits):
+            self._selected_index = max(0, len(self._habits) - 1)

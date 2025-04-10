@@ -1,10 +1,16 @@
 from abc import ABC, abstractmethod
-from typing import Dict
+from typing import Dict, Tuple
+from datetime import date
 
 class IHabitsLogHandler(ABC):
 
     @abstractmethod
-    def get_statuses(self) -> Dict[str, bool]:
+    def get_today_statuses(self) -> Dict[str, bool]:
+        """Get all habit statuses."""
+        pass
+
+    @abstractmethod
+    def get_all_statuses(self) -> Dict[Tuple[str, date], bool]:
         """Get all habit statuses."""
         pass
 

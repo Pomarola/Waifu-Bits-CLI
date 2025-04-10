@@ -7,11 +7,15 @@ class KeystrokeHandlerUrwid(IKeystrokeHandler):
 
     def start_listening(self):
         def handle_input(key):
-            if self.event_handler.ui.focus_mode == 'input':
+            if isinstance(key, tuple):
+                return  # Ignore mouse or unsupported events
+
+            if self.event_handler.ui.is_input_focused():
                 if key == 'enter':
                     self.event_handler.add_new_habit()
                 elif key == 'esc':
                     self.event_handler.cancel_input_mode()
+
             else:
                 if key == 'up':
                     self.event_handler.move_up()

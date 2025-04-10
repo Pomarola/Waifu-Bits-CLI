@@ -1,11 +1,12 @@
-import datetime
+from datetime import datetime
 import os
 from dotenv import load_dotenv
 
 def get_config():
     load_dotenv()
+    raw_date = os.getenv("DATE")
     return {
-        "DATE": datetime.date.today().isoformat() if os.getenv('DATE') is None else os.getenv('DATE'),
+        "DATE": datetime.today().date() if raw_date is None else datetime.fromisoformat(raw_date),
         "HABITS_FILEPATH": os.getenv('HABITS_FILEPATH'),
         "HABIT_STATUS_FILEPATH": os.getenv('HABIT_STATUS_FILEPATH')
     }
@@ -13,7 +14,6 @@ def get_config():
 def get_palette():
     return [
         ('reversed', 'standout', ''),
-
         ('input_focus', 'bold,italics,white', 'dark gray'),
         ('black', 'bold,black', 'light gray'),
         ('bg', 'bold,light gray', 'black'),
@@ -25,5 +25,7 @@ def get_palette():
         ('dim', 'bold,dark gray', 'black'),
         ('selected', 'bold,black', 'light gray'),
         ('unselected', 'bold,light gray', ''),
-        ('unfocused', 'bold,light gray', 'dark gray')
+        ('unfocused', 'bold,light gray', 'dark gray'),
+        ('box_done', 'white', 'white'),
+        ('box_empty', 'black', 'black'),
     ]

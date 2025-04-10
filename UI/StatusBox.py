@@ -9,10 +9,11 @@ class StatusBox:
             )
         )
         padded = urwid.Padding(content, left=1, right=1)
-        self.widget = urwid.AttrMap(
+        self.view = urwid.AttrMap(
             urwid.LineBox(padded, title="STATUS"),
             'bg'
         )
 
-    def widget_view(self):
-        return self.widget
+    def set_data(self, habits, statuses):
+        # Placeholder for setting data
+        pass
