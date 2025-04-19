@@ -2,7 +2,7 @@ import csv
 from typing import Dict, Tuple
 from datetime import date, datetime
 from pathlib import Path
-from HabitsLog.IHabitsLogHandler import IHabitsLogHandler
+from ..HabitsLog.IHabitsLogHandler import IHabitsLogHandler
 
 
 class HabitsLogHandlerCsv(IHabitsLogHandler):

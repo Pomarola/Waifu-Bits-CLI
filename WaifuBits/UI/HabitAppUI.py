@@ -3,23 +3,24 @@ from typing import Tuple
 
 import urwid
 
-from UI.CommandBox import CommandBox
-from UI.HabitListBox import HabitListBox
-from UI.HeatMapBox import HeatMapBox
-from UI.InputBox import InputBox
-from UI.LogBox import LogBox
-from UI.StatusBox import StatusBox
-
+from ..UI.CommandBox import CommandBox
+from ..UI.HabitListBox import HabitListBox
+from ..UI.HeatMapBox import HeatMapBox
+from ..UI.InputBox import InputBox
+from ..UI.LogBox import LogBox
+from ..UI.StatusBox import StatusBox
+from ..UI.CuteAnimeGirlBox import CuteAnimeGirlBox
 
 class FixedFocusPile(urwid.Pile):
     def __init__(self, contents, ui):
-        self.ui = ui  # reference to HabitAppUI
+        self.ui = ui  # reference to HabitApp.UI
         super().__init__(contents)
 
     def keypress(self, size, key):
         if self.ui._focus_mode == 'input':
-            bottom_columns = self.contents[1][0]  # bottom columns (commands + right pile)
-            right_pile = bottom_columns.contents[1][0]  # right pile (input + log)
+            bottom_columns = self.contents[2][0]  # Third section (index 2)
+            right_pile_attrmap = bottom_columns.contents[1][0]
+            right_pile = right_pile_attrmap.original_widget
             input_widget = right_pile.contents[0][0]
             return input_widget.keypress(size, key)
 
@@ -32,6 +33,7 @@ class HabitAppUI:
     def __init__(self, day):
         self._heat_map_box = HeatMapBox(day)
         self._habit_box = HabitListBox()
+        self._girl_box = CuteAnimeGirlBox()
         self._status_box = StatusBox()
         self._input_box = InputBox()
         self._command_box = CommandBox()
@@ -39,19 +41,23 @@ class HabitAppUI:
 
         # Compose layout
         self.pile = FixedFocusPile([
-            ('weight', 5, urwid.Columns([
+            ('weight', 3, urwid.Columns([
                 ('weight', 1, urwid.AttrMap(self._habit_box.view, 'bg')),
-                ('weight', 3, urwid.Pile([
-                    ('weight', 1, urwid.AttrMap(self._heat_map_box.view, 'header')),
-                    ('weight', 1, urwid.AttrMap(self._status_box.view, 'dim'))
-                ]))
+                ('weight', 3, urwid.AttrMap(self._heat_map_box.view, 'header'))
+            ])),
+            ('weight', 3, urwid.Columns([
+                ('weight', 1, urwid.AttrMap(self._girl_box.view, 'title')),
+                ('weight', 3, urwid.AttrMap(self._status_box.view, 'dim'))
             ])),
             ('weight', 1, urwid.Columns([
                 ('weight', 1, urwid.AttrMap(self._command_box.view, 'bg')),
-                ('weight', 3, urwid.Pile([
-                    ('weight', 1, urwid.AttrMap(self._input_box.view, 'input')),
-                    ('weight', 3, urwid.AttrMap(self._log_box.view, 'log'))
-                ]))
+                ('weight', 3, urwid.AttrMap(
+                    urwid.Pile([
+                        ('weight', 1, self._input_box.view),
+                        ('weight', 3, self._log_box.view)
+                    ]),
+                    'log'
+                ))
             ]))
         ], self)
 
@@ -91,6 +97,6 @@ class HabitAppUI:
 
     def refresh(self, habits: list[str], today_statuses: dict[str, bool], all_statuses: dict[Tuple[str, date], bool]):
         self._habit_box.set_data(habits, today_statuses)
-        self._status_box.set_data(habits, today_statuses)
+        self._status_box.set_data(habits, all_statuses)
+        self._girl_box.set_data(habits, today_statuses)
         self._heat_map_box.set_data(habits, all_statuses)
-

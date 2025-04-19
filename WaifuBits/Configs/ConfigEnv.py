@@ -26,6 +26,6 @@ def get_palette():
         ('selected', 'bold,black', 'light gray'),
         ('unselected', 'bold,light gray', ''),
         ('unfocused', 'bold,light gray', 'dark gray'),
-        ('box_done', 'white', 'white'),
-        ('box_empty', 'black', 'black'),
+        ('box_done', 'dark gray', ''),   # black text on white box
+        ('box_empty', '', ''),
     ]

@@ -1,4 +1,4 @@
-from KeyHandlers.IKeystrokeHandler import IKeystrokeHandler
+from ..KeyHandlers.IKeystrokeHandler import IKeystrokeHandler
 
 class KeystrokeHandlerUrwid(IKeystrokeHandler):
     def __init__(self, loop, event_handler):
@@ -23,11 +23,11 @@ class KeystrokeHandlerUrwid(IKeystrokeHandler):
                     self.event_handler.move_down()
                 elif key == 'enter':
                     self.event_handler.invert_status()
-                elif key.lower() == 'r':
+                elif key.lower() in ('r', 'backspace', 'delete'):
                     self.event_handler.remove_habit()
                 elif key.lower() == 'n':
                     self.event_handler.enter_input_mode()
-                elif key.lower() == 'q':
+                elif key.lower() in ('q', 'esc'):
                     self.event_handler.quit()
 
         self.loop.unhandled_input = handle_input

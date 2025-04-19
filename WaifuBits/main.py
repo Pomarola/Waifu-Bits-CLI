@@ -2,12 +2,12 @@
 from dotenv import load_dotenv
 
 import urwid
-from Configs.ConfigEnv import get_config, get_palette
-from Events.EventHandlerCLI import EventHandlerCLI
-from HabitsDb.HabitsDbHandlerTxt import HabitsDbHandlerTxt
-from HabitsLog.HabitsLogHandlerCsv import HabitsLogHandlerCsv
-from KeyHandlers.KeystrokeHandlerUrwid import KeystrokeHandlerUrwid
-from UI.HabitAppUI import HabitAppUI
+from .Configs.ConfigEnv import get_config, get_palette
+from .Events.EventHandlerCLI import EventHandlerCLI
+from .HabitsDb.HabitsDbHandlerTxt import HabitsDbHandlerTxt
+from .HabitsLog.HabitsLogHandlerCsv import HabitsLogHandlerCsv
+from .KeyHandlers.KeystrokeHandlerUrwid import KeystrokeHandlerUrwid
+from .UI.HabitAppUI import HabitAppUI
 
 def main():
     load_dotenv()

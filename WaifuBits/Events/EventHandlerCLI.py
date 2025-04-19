@@ -1,6 +1,6 @@
 import urwid
 
-from Events.IEventHandler import IEventHandler
+from ..Events.IEventHandler import IEventHandler
 
 class EventHandlerCLI(IEventHandler):
     def __init__(self, habits_db, status_db, ui):

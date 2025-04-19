@@ -1,9 +1,9 @@
 import os
 from typing import List
-from HabitsDb.IHabitsDbHandler import IHabitsDbHandler
+from ..HabitsDb.IHabitsDbHandler import IHabitsDbHandler
 
 class HabitsDbHandlerTxt(IHabitsDbHandler):
-    MAX_HABITS = 50
+    MAX_HABITS = 25
 
     def __init__(self, filepath: str, log_callback=None):
         self.filepath = filepath

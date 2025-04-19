@@ -33,6 +33,7 @@ class HabitListBox:
     def refresh(self):
         self._list_walker.clear()
         self._ensure_valid_selection()
+        self._list_walker.append(urwid.Divider())  # spacer before the list
         if not self._habits:
             self._list_walker.append(self._render_empty_message())
         else:
