@@ -8,3 +8,11 @@ I assure you that it is not a scam, it is just a simple habit tracker.
 There's nothing to worry about, it's just a simple habit tracker.
 <br>
 Dont be too suspicious, it's just a simple habit tracker.
+
+In the root of this project, just run 
+```pip3 install --user .```
+
+Remember to include it in your path, then just type
+```waifu-bits```
+
+##### ENJOY

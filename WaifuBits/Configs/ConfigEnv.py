@@ -1,9 +1,20 @@
 from datetime import datetime
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 def get_config():
-    load_dotenv()
+    # This resolves to the installed WaifuBits/Configs directory
+    current_dir = Path(__file__).resolve().parent
+
+    # Go up to WaifuBits root and load .env from there
+    env_path = current_dir.parent / ".env"
+
+    if env_path.exists():
+        load_dotenv(env_path)
+    else:
+        print(f"⚠️ .env file not found at {env_path}")
+
     raw_date = os.getenv("DATE")
     return {
         "DATE": datetime.today().date() if raw_date is None else datetime.fromisoformat(raw_date),
